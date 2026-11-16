@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2021-2025 泰國、越南、台灣入境旅客數據分析</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+            background: radial-gradient(circle at top right, #0f172a, #090d16);
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 440px;
+        }
+        .btn-active {
+            background-color: #3b82f6 !important;
+            color: #ffffff !important;
+            border-color: #60a5fa !important;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen pb-16">
+
+    <!-- Header Section -->
+    <header class="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl sticky top-0 z-50 shadow-2xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 bg-blue-600/20 border border-blue-500/30 rounded-xl text-blue-400">
+                    <i class="fa-solid fa-chart-line text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-400 via-teal-300 to-indigo-300 bg-clip-text text-transparent">
+                        2021–2025 亞太旅遊勝地入境數據研析儀表板
+                    </h1>
+                    <p class="text-slate-400 text-xs mt-0.5">學術簡報與商業分析專用・泰國 / 越南 / 台灣趨勢觀測</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="exportCSV()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 transition-all flex items-center gap-2 shadow-lg hover:border-slate-500">
+                    <i class="fa-solid fa-file-excel text-emerald-400"></i> 匯出 CSV 數據
+                </button>
+                <button onclick="downloadChart()" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white transition-all flex items-center gap-2 shadow-lg shadow-blue-600/30">
+                    <i class="fa-solid fa-download"></i> 下載圖表 (PNG)
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 space-y-8">
+
+        <!-- Top KPI Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Thailand Card -->
+            <div class="glass-panel rounded-2xl p-6 hover:border-blue-500/40 transition-all duration-300 shadow-xl group">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-3xl">🇹🇭</span>
+                        <div>
+                            <h2 class="text-base font-bold text-slate-100">泰國 (Thailand)</h2>
+                            <p class="text-[11px] text-slate-400">Ministry of Tourism & Sports</p>
+                        </div>
+                    </div>
+                    <span class="text-xs px-2.5 py-1 rounded-full font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/30">區域領頭羊</span>
+                </div>
+                <div class="mt-5 flex items-baseline justify-between">
+                    <div>
+                        <div class="text-3xl font-extrabold text-blue-400 tracking-tight">3,297 <span class="text-sm font-normal text-slate-400">萬</span></div>
+                        <p class="text-xs text-slate-400 mt-1">2025 入境旅客人次</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="inline-flex items-center text-xs font-bold text-rose-400 bg-rose-500/10 px-2 py-1 rounded-md border border-rose-500/20">
+                            <i class="fa-solid fa-arrow-trend-down mr-1"></i> -7.2% YoY
+                        </span>
+                        <p class="text-[10px] text-slate-400 mt-1">2024 高峰: 3,554萬</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vietnam Card -->
+            <div class="glass-panel rounded-2xl p-6 hover:border-emerald-500/40 transition-all duration-300 shadow-xl group">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-3xl">🇻🇳</span>
+                        <div>
+                            <h2 class="text-base font-bold text-slate-100">越南 (Vietnam)</h2>
+                            <p class="text-[11px] text-slate-400">Vietnam National Authority</p>
+                        </div>
+                    </div>
+                    <span class="text-xs px-2.5 py-1 rounded-full font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">歷史新高</span>
+                </div>
+                <div class="mt-5 flex items-baseline justify-between">
+                    <div>
+                        <div class="text-3xl font-extrabold text-emerald-400 tracking-tight">2,120 <span class="text-sm font-normal text-slate-400">萬</span></div>
+                        <p class="text-xs text-slate-400 mt-1">2025 入境旅客人次</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="inline-flex items-center text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-md border border-emerald-500/20">
+                            <i class="fa-solid fa-arrow-trend-up mr-1"></i> +20.8% YoY
+                        </span>
+                        <p class="text-[10px] text-slate-400 mt-1">突破2,000萬門檻</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Taiwan Card -->
+            <div class="glass-panel rounded-2xl p-6 hover:border-amber-500/40 transition-all duration-300 shadow-xl group">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-3xl">🇹🇼</span>
+                        <div>
+                            <h2 class="text-base font-bold text-slate-100">台灣 (Taiwan)</h2>
+                            <p class="text-[11px] text-slate-400">Tourism Administration</p>
+                        </div>
+                    </div>
+                    <span class="text-xs px-2.5 py-1 rounded-full font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">穩健復甦</span>
+                </div>
+                <div class="mt-5 flex items-baseline justify-between">
+                    <div>
+                        <div class="text-3xl font-extrabold text-amber-400 tracking-tight">860 <span class="text-sm font-normal text-slate-400">萬</span></div>
+                        <p class="text-xs text-slate-400 mt-1">2025 入境旅客人次</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="inline-flex items-center text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-md border border-emerald-500/20">
+                            <i class="fa-solid fa-arrow-trend-up mr-1"></i> +11.7% YoY
+                        </span>
+                        <p class="text-[10px] text-slate-400 mt-1">2024 人次: 770萬</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Chart Controls & Canvas Container -->
+        <div class="glass-panel rounded-2xl p-6 shadow-2xl space-y-6">
+            
+            <!-- Controls Toolbar -->
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+                
+                <!-- Left: Mode Switcher -->
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mr-1">分析維度:</span>
+                    <div class="bg-slate-900 p-1 rounded-xl border border-slate-800 flex items-center gap-1">
+                        <button id="btnModeVolume" onclick="switchMode('volume')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-300 transition-all btn-active">
+                            <i class="fa-solid fa-users mr-1"></i> 旅客數 (萬人次)
+                        </button>
+                        <button id="btnModeYoY" onclick="switchMode('yoy')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-300 transition-all hover:text-white">
+                            <i class="fa-solid fa-percent mr-1"></i> 年增率 YoY (%)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right: Country Filter Buttons -->
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mr-1">國家篩選:</span>
+                    <button onclick="filterCountry('all')" id="filter-all" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 transition-all btn-active">
+                        全選對比
+                    </button>
+                    <button onclick="filterCountry('thailand')" id="filter-thailand" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 border border-slate-800 text-blue-400 hover:border-blue-500/50 transition-all">
+                        🇹🇭 僅泰國
+                    </button>
+                    <button onclick="filterCountry('vietnam')" id="filter-vietnam" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 border border-slate-800 text-emerald-400 hover:border-emerald-500/50 transition-all">
+                        🇻🇳 僅越南
+                    </button>
+                    <button onclick="filterCountry('taiwan')" id="filter-taiwan" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 border border-slate-800 text-amber-400 hover:border-amber-500/50 transition-all">
+                        🇹🇼 僅台灣
+                    </button>
+                </div>
+            </div>
+
+            <!-- Canvas Chart Container -->
+            <div class="chart-container">
+                <canvas id="tourismChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Interactive Data Table & Search -->
+        <div class="glass-panel rounded-2xl p-6 shadow-2xl space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-table text-blue-400"></i> 歷年完整數據暨增率對照明細
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-0.5">點擊搜尋欄可即時過濾數據，滑鼠移至表格可獲得高亮提示</p>
+                </div>
+                <div class="relative w-full sm:w-64">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                    <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="搜尋年份、國家或數據..." 
+                           class="w-full bg-slate-900/90 border border-slate-700 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-all">
+                </div>
+            </div>
+
+            <!-- Table Container -->
+            <div class="overflow-x-auto rounded-xl border border-slate-800">
+                <table id="dataTable" class="w-full text-sm text-left text-slate-300">
+                    <thead class="text-xs uppercase bg-slate-900/90 text-slate-400 border-b border-slate-800 font-semibold tracking-wider">
+                        <tr>
+                            <th scope="col" class="px-5 py-3.5">國家 / 地區</th>
+                            <th scope="col" class="px-5 py-3.5">2021 年</th>
+                            <th scope="col" class="px-5 py-3.5">2022 年</th>
+                            <th scope="col" class="px-5 py-3.5">2023 年</th>
+                            <th scope="col" class="px-5 py-3.5">2024 年</th>
+                            <th scope="col" class="px-5 py-3.5">2025 年</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/80 bg-slate-950/40">
+                        <!-- Thailand Row -->
+                        <tr class="hover:bg-slate-800/50 transition-colors">
+                            <th scope="row" class="px-5 py-4 font-bold text-slate-100 flex items-center gap-2.5">
+                                <span class="text-xl">🇹🇭</span> 
+                                <div>
+                                    <span class="block">泰國</span>
+                                    <span class="text-[10px] text-slate-400 font-normal">Thailand</span>
+                                </div>
+                            </th>
+                            <td class="px-5 py-4 font-mono">43.0 <span class="text-[10px] text-slate-500 block">-</span></td>
+                            <td class="px-5 py-4 font-mono">1,115.0 <span class="text-[10px] text-emerald-400 block font-semibold">+2,490%</span></td>
+                            <td class="px-5 py-4 font-mono">2,815.0 <span class="text-[10px] text-emerald-400 block font-semibold">+152%</span></td>
+                            <td class="px-5 py-4 font-mono">3,554.0 <span class="text-[10px] text-emerald-400 block font-semibold">+26.0%</span></td>
+                            <td class="px-5 py-4 font-mono font-bold text-slate-100">3,297.0 <span class="text-[10px] text-rose-400 block font-semibold">-7.2%</span></td>
+                        </tr>
+                        <!-- Vietnam Row -->
+                        <tr class="hover:bg-slate-800/50 transition-colors">
+                            <th scope="row" class="px-5 py-4 font-bold text-slate-100 flex items-center gap-2.5">
+                                <span class="text-xl">🇻🇳</span>
+                                <div>
+                                    <span class="block">越南</span>
+                                    <span class="text-[10px] text-slate-400 font-normal">Vietnam</span>
+                                </div>
+                            </th>
+                            <td class="px-5 py-4 font-mono">15.7 <span class="text-[10px] text-slate-500 block">-</span></td>
+                            <td class="px-5 py-4 font-mono">366.0 <span class="text-[10px] text-emerald-400 block font-semibold">+2,231%</span></td>
+                            <td class="px-5 py-4 font-mono">1,260.0 <span class="text-[10px] text-emerald-400 block font-semibold">+244%</span></td>
+                            <td class="px-5 py-4 font-mono">1,755.0 <span class="text-[10px] text-emerald-400 block font-semibold">+39.3%</span></td>
+                            <td class="px-5 py-4 font-mono font-bold text-slate-100">2,120.0 <span class="text-[10px] text-emerald-400 block font-semibold">+20.8%</span></td>
+                        </tr>
+                        <!-- Taiwan Row -->
+                        <tr class="hover:bg-slate-800/50 transition-colors">
+                            <th scope="row" class="px-5 py-4 font-bold text-slate-100 flex items-center gap-2.5">
+                                <span class="text-xl">🇹🇼</span>
+                                <div>
+                                    <span class="block">台灣</span>
+                                    <span class="text-[10px] text-slate-400 font-normal">Taiwan</span>
+                                </div>
+                            </th>
+                            <td class="px-5 py-4 font-mono">14.0 <span class="text-[10px] text-slate-500 block">-</span></td>
+                            <td class="px-5 py-4 font-mono">90.0 <span class="text-[10px] text-emerald-400 block font-semibold">+543%</span></td>
+                            <td class="px-5 py-4 font-mono">649.0 <span class="text-[10px] text-emerald-400 block font-semibold">+621%</span></td>
+                            <td class="px-5 py-4 font-mono">770.0 <span class="text-[10px] text-emerald-400 block font-semibold">+18.6%</span></td>
+                            <td class="px-5 py-4 font-mono font-bold text-slate-100">860.0 <span class="text-[10px] text-emerald-400 block font-semibold">+11.7%</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    
+        <!-- Section 2: Taiwan Inbound Visitors by Region (114/10 - 115/09) -->
+        <div class="pt-4 border-t border-slate-800/80 space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="p-2.5 bg-amber-500/15 border border-amber-500/30 rounded-xl text-amber-400">
+                        <i class="fa-solid fa-chart-pie text-lg"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg sm:text-xl font-bold text-slate-100">
+                            🇹🇼 台灣來臺旅客按國籍地區結構分析（114年10月 – 115年9月）
+                        </h2>
+                        <p class="text-slate-400 text-xs mt-0.5">交通部觀光署統計資料庫・共 12 個月累計 6,900,434 人次</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="exportTwRegionCSV()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 transition-all flex items-center gap-2 shadow-lg hover:border-slate-500">
+                        <i class="fa-solid fa-file-excel text-emerald-400"></i> 匯出台灣地區 CSV
+                    </button>
+                    <button onclick="downloadTwPieChart()" class="px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-xs font-semibold text-white transition-all flex items-center gap-2 shadow-lg shadow-amber-600/20">
+                        <i class="fa-solid fa-download"></i> 下載圓餅圖
+                    </button>
+                </div>
+            </div>
+
+            <!-- Interactive Pie Chart + Controls & Summary -->
+            <div class="glass-panel rounded-2xl p-6 shadow-2xl space-y-6">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+                    <!-- Left: Period Filter -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mr-1">統計區間:</span>
+                        <button onclick="filterTwPeriod('all')" id="tw-period-all" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 transition-all btn-active">
+                            全年累計 (114/10–115/09)
+                        </button>
+                        <button onclick="filterTwPeriod('114')" id="tw-period-114" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:border-blue-500/50 transition-all">
+                            114年 (10–12月)
+                        </button>
+                        <button onclick="filterTwPeriod('115')" id="tw-period-115" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:border-blue-500/50 transition-all">
+                            115年 (1–9月)
+                        </button>
+                    </div>
+
+                    <!-- Right: Chart Type Toggle -->
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mr-1">圖表樣式:</span>
+                        <div class="bg-slate-900 p-1 rounded-xl border border-slate-800 flex items-center gap-1">
+                            <button id="btnTwPie" onclick="switchTwChartType('pie')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 transition-all btn-active">
+                                <i class="fa-solid fa-chart-pie mr-1"></i> 實心圓餅圖
+                            </button>
+                            <button id="btnTwDoughnut" onclick="switchTwChartType('doughnut')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 transition-all hover:text-white">
+                                <i class="fa-solid fa-circle-notch mr-1"></i> 環形占比圖
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grid: Interactive Pie Canvas + Ranked Breakdown -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                    <div class="lg:col-span-7 relative h-[380px] flex items-center justify-center">
+                        <canvas id="twRegionPieChart"></canvas>
+                    </div>
+                    <div class="lg:col-span-5 space-y-3">
+                        <div class="bg-slate-900/70 border border-slate-800 rounded-xl p-4 flex items-center justify-between">
+                            <div>
+                                <div class="text-xs text-slate-400" id="twSummaryTitle">所選區間累計總人次</div>
+                                <div class="text-2xl font-extrabold text-amber-400 font-mono mt-0.5" id="twSummaryTotal">6,900,434</div>
+                            </div>
+                            <span class="text-xs px-2.5 py-1 rounded-full font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30" id="twSummaryMonths">共 12 個月</span>
+                        </div>
+                        <div id="twRegionRankList" class="space-y-2"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full Monthly Breakdown Table -->
+            <div class="glass-panel rounded-2xl p-6 shadow-2xl space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="text-base font-bold text-slate-100 flex items-center gap-2">
+                            <i class="fa-solid fa-list-ol text-amber-400"></i> 114年10月－115年9月 台灣各月五大洲入境明細
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-0.5">點擊上方「統計區間」按鈕可同步篩選圖表與高亮對應月份</p>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto rounded-xl border border-slate-800">
+                    <table id="twRegionTable" class="w-full text-xs sm:text-sm text-right text-slate-300 whitespace-nowrap">
+                        <thead class="text-xs uppercase bg-slate-900/90 text-slate-400 border-b border-slate-800 font-semibold tracking-wider">
+                            <tr>
+                                <th scope="col" class="px-4 py-3 text-center">年別</th>
+                                <th scope="col" class="px-4 py-3 text-center">月份</th>
+                                <th scope="col" class="px-4 py-3">亞洲地區</th>
+                                <th scope="col" class="px-4 py-3">非洲地區</th>
+                                <th scope="col" class="px-4 py-3">美洲地區</th>
+                                <th scope="col" class="px-4 py-3">大洋洲地區</th>
+                                <th scope="col" class="px-4 py-3">歐洲地區</th>
+                                <th scope="col" class="px-4 py-3">其他未列明</th>
+                                <th scope="col" class="px-4 py-3 text-amber-400">小計</th>
+                            </tr>
+                        </thead>
+                        <tbody id="twRegionTableBody" class="divide-y divide-slate-800/80 bg-slate-950/40 font-mono"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 text-center text-xs text-slate-500">
+        <p>資料來源：泰國旅遊與體育部 (MOTS)、越南國家旅遊局 (VNAT)、台灣觀光署官方數據匯整</p>
+    </footer>
+
+    <!-- Interactive Logic Script -->
+    <script>
+        let myChart = null;
+        let currentMode = 'volume'; // 'volume' or 'yoy'
+        let currentFilter = 'all';  // 'all', 'thailand', 'vietnam', 'taiwan'
+
+        const years = ['2021 年', '2022 年', '2023 年', '2024 年', '2025 年'];
+
+        // Raw datasets for both Volume & YoY
+        const rawData = {
+            thailand: {
+                name: '泰國 (Thailand)',
+                color: '#3b82f6',
+                bgGradient: 'rgba(59, 130, 246, 0.12)',
+                volume: [43, 1115, 2815, 3554, 3297],
+                yoy: [0, 2490, 152, 26.0, -7.2]
+            },
+            vietnam: {
+                name: '越南 (Vietnam)',
+                color: '#10b981',
+                bgGradient: 'rgba(16, 185, 129, 0.12)',
+                volume: [15.7, 366, 1260, 1755, 2120],
+                yoy: [0, 2231, 244, 39.3, 20.8]
+            },
+            taiwan: {
+                name: '台灣 (Taiwan)',
+                color: '#f59e0b',
+                bgGradient: 'rgba(245, 158, 11, 0.12)',
+                volume: [14, 90, 649, 770, 860],
+                yoy: [0, 543, 621, 18.6, 11.7]
+            }
+        };
+
+        function getDatasets() {
+            const keys = currentFilter === 'all' ? ['thailand', 'vietnam', 'taiwan'] : [currentFilter];
+            
+            return keys.map(key => {
+                const item = rawData[key];
+                return {
+                    label: item.name,
+                    data: currentMode === 'volume' ? item.volume : item.yoy,
+                    borderColor: item.color,
+                    backgroundColor: item.bgGradient,
+                    borderWidth: 3,
+                    pointBackgroundColor: item.color,
+                    pointBorderColor: '#0f172a',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    pointHoverRadius: 9,
+                    tension: 0.3,
+                    fill: true
+                };
+            });
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('tourismChart').getContext('2d');
+            
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: getDatasets()
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 750,
+                        easing: 'easeOutQuart'
+                    },
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            align: 'end',
+                            labels: {
+                                color: '#94a3b8',
+                                font: { family: 'Plus Jakarta Sans', size: 12, weight: '600' },
+                                usePointStyle: true,
+                                padding: 20
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#f8fafc',
+                            bodyColor: '#cbd5e1',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            padding: 14,
+                            boxPadding: 6,
+                            usePointStyle: true,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) label += ': ';
+                                    if (context.parsed.y !== null) {
+                                        if (currentMode === 'volume') {
+                                            label += context.parsed.y.toLocaleString() + ' 萬人次';
+                                        } else {
+                                            label += (context.parsed.y > 0 ? '+' : '') + context.parsed.y + ' % (YoY)';
+                                        }
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(51, 65, 85, 0.3)', drawBorder: false },
+                            ticks: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', size: 12 } }
+                        },
+                        y: {
+                            grid: { color: 'rgba(51, 65, 85, 0.3)', drawBorder: false },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: { family: 'Plus Jakarta Sans', size: 12 },
+                                callback: function(value) {
+                                    return currentMode === 'volume' ? value + ' 萬' : value + ' %';
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: currentMode === 'volume' ? '入境人次 (萬人)' : '年增率 YoY (%)',
+                                color: '#64748b',
+                                font: { size: 12, weight: '500' }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Switch Data Mode (Volume vs YoY)
+        function switchMode(mode) {
+            currentMode = mode;
+            document.getElementById('btnModeVolume').classList.toggle('btn-active', mode === 'volume');
+            document.getElementById('btnModeYoY').classList.toggle('btn-active', mode === 'yoy');
+            
+            myChart.data.datasets = getDatasets();
+            myChart.options.scales.y.title.text = mode === 'volume' ? '入境人次 (萬人)' : '年增率 YoY (%)';
+            myChart.update();
+        }
+
+        // Filter Country Button Actions
+        function filterCountry(country) {
+            currentFilter = country;
+            ['all', 'thailand', 'vietnam', 'taiwan'].forEach(c => {
+                const btn = document.getElementById(`filter-${c}`);
+                if (btn) {
+                    if (c === country) {
+                        btn.classList.add('btn-active');
+                    } else {
+                        btn.classList.remove('btn-active');
+                    }
+                }
+            });
+            myChart.data.datasets = getDatasets();
+            myChart.update();
+        }
+
+        // Download Chart as PNG
+        function downloadChart() {
+            const link = document.createElement('a');
+            link.download = `2021-2025_亞太旅遊入境趨勢圖表_${currentMode}.png`;
+            link.href = myChart.toBase64Image();
+            link.click();
+        }
+
+        // Export Data to CSV
+        function exportCSV() {
+            let csvContent = "\uFEFF"; // UTF-8 BOM
+            csvContent += "國家/地區,2021年(萬),2022年(萬),2023年(萬),2024年(萬),2025年(萬)\n";
+            csvContent += "泰國,43,1115,2815,3554,3297\n";
+            csvContent += "越南,15.7,366,1260,1755,2120\n";
+            csvContent += "台灣,14,90,649,770,860\n";
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", "2021-2025_亞太入境旅客數據總表.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Table Instant Search Functionality
+        function searchTable() {
+            const input = document.getElementById("searchInput").value.toUpperCase();
+            const trs = document.getElementById("dataTable").getElementsByTagName("tr");
+
+            for (let i = 1; i < trs.length; i++) {
+                let show = false;
+                const tds = trs[i].getElementsByTagName("td");
+                const th = trs[i].getElementsByTagName("th")[0];
+                
+                if (th && th.innerText.toUpperCase().indexOf(input) > -1) {
+                    show = true;
+                }
+                for (let j = 0; j < tds.length; j++) {
+                    if (tds[j] && tds[j].innerText.toUpperCase().indexOf(input) > -1) {
+                        show = true;
+                    }
+                }
+                trs[i].style.display = show ? "" : "none";
+            }
+        }
+
+        // Initialize Chart on Window Load
+        window.onload = function() {
+            initChart();
+        };
+    </script>
+
+    <script>
+        // ==========================================
+        // Taiwan Inbound Visitors by Region (114/10 - 115/09)
+        // ==========================================
+        let twPieChart = null;
+        let twPeriod = 'all';
+        let twChartType = 'pie';
+
+        const twMonthlyData = [
+            { year: '114', month: 10, asia: 464833, africa: 1086, americas: 79118,  oceania: 14374, europe: 47410, unknown: 68, total: 606889 },
+            { year: '114', month: 11, asia: 511131, africa: 1043, americas: 93969,  oceania: 14522, europe: 51624, unknown: 94, total: 672383 },
+            { year: '114', month: 12, asia: 588361, africa: 1186, americas: 101128, oceania: 21254, europe: 43198, unknown: 47, total: 755174 },
+            { year: '115', month: 1,  asia: 475015, africa: 894,  americas: 71601,  oceania: 16817, europe: 39415, unknown: 44, total: 603786 },
+            { year: '115', month: 2,  asia: 372348, africa: 1314, americas: 67275,  oceania: 9851,  europe: 36061, unknown: 46, total: 486895 },
+            { year: '115', month: 3,  asia: 574438, africa: 986,  americas: 102283, oceania: 14961, europe: 53891, unknown: 68, total: 746627 },
+            { year: '115', month: 4,  asia: 447556, africa: 1063, americas: 90362,  oceania: 16336, europe: 47550, unknown: 67, total: 602934 },
+            { year: '115', month: 5,  asia: 429091, africa: 862,  americas: 74352,  oceania: 10228, europe: 36076, unknown: 80, total: 550689 },
+            { year: '115', month: 6,  asia: 351156, africa: 1883, americas: 86415,  oceania: 10164, europe: 29023, unknown: 60, total: 478701 },
+            { year: '115', month: 7,  asia: 318630, africa: 1083, americas: 73965,  oceania: 8863,  europe: 33122, unknown: 66, total: 435729 },
+            { year: '115', month: 8,  asia: 355140, africa: 1604, americas: 64515,  oceania: 7851,  europe: 37530, unknown: 89, total: 466729 },
+            { year: '115', month: 9,  asia: 392607, africa: 1161, americas: 54476,  oceania: 11416, europe: 34179, unknown: 59, total: 493898 }
+        ];
+
+        const twRegionMeta = [
+            { key: 'asia',     label: '亞洲地區',   color: '#3b82f6' },
+            { key: 'americas', label: '美洲地區',   color: '#f59e0b' },
+            { key: 'europe',   label: '歐洲地區',   color: '#10b981' },
+            { key: 'oceania',  label: '大洋洲地區', color: '#8b5cf6' },
+            { key: 'africa',   label: '非洲地區',   color: '#f43f5e' },
+            { key: 'unknown',  label: '其他未列明', color: '#64748b' }
+        ];
+
+        function getTwFilteredSums() {
+            const subset = twPeriod === 'all' ? twMonthlyData : twMonthlyData.filter(d => d.year === twPeriod);
+            const sums = { asia: 0, africa: 0, americas: 0, oceania: 0, europe: 0, unknown: 0, total: 0 };
+            subset.forEach(r => {
+                sums.asia += r.asia;
+                sums.africa += r.africa;
+                sums.americas += r.americas;
+                sums.oceania += r.oceania;
+                sums.europe += r.europe;
+                sums.unknown += r.unknown;
+                sums.total += r.total;
+            });
+            return { subset, sums };
+        }
+
+        function renderTwRegionSection() {
+            const { subset, sums } = getTwFilteredSums();
+
+            // Update summary KPI box
+            document.getElementById('twSummaryTotal').textContent = sums.total.toLocaleString();
+            document.getElementById('twSummaryMonths').textContent = `共 ${subset.length} 個月`;
+
+            // Update side ranked list
+            const rankContainer = document.getElementById('twRegionRankList');
+            rankContainer.innerHTML = twRegionMeta.map(m => {
+                const val = sums[m.key];
+                const pct = ((val / sums.total) * 100).toFixed(2);
+                return `
+                    <div class="flex items-center justify-between px-3.5 py-2 rounded-xl bg-slate-900/50 border border-slate-800/80 hover:border-slate-700 transition-colors">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-2.5 h-2.5 rounded-full inline-block" style="background-color: ${m.color}"></span>
+                            <span class="text-xs font-semibold text-slate-200">${m.label}</span>
+                        </div>
+                        <div class="text-right font-mono">
+                            <span class="text-xs font-bold text-slate-100">${pct}%</span>
+                            <span class="text-[11px] text-slate-400 ml-2">(${val.toLocaleString()})</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Update or init Chart.js Pie Chart
+            const chartData = twRegionMeta.map(m => sums[m.key]);
+            const chartLabels = twRegionMeta.map(m => m.label);
+            const chartColors = twRegionMeta.map(m => m.color);
+
+            if (!twPieChart) {
+                const ctx = document.getElementById('twRegionPieChart').getContext('2d');
+                twPieChart = new Chart(ctx, {
+                    type: twChartType,
+                    data: {
+                        labels: chartLabels,
+                        datasets: [{
+                            data: chartData,
+                            backgroundColor: chartColors,
+                            borderColor: '#0f172a',
+                            borderWidth: 2,
+                            hoverOffset: 10
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: '#cbd5e1',
+                                    font: { family: 'Plus Jakarta Sans, Noto Sans TC', size: 12 },
+                                    usePointStyle: true,
+                                    padding: 16
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                                titleColor: '#f8fafc',
+                                bodyColor: '#cbd5e1',
+                                borderColor: 'rgba(255, 255, 255, 0.1)',
+                                borderWidth: 1,
+                                padding: 12,
+                                callbacks: {
+                                    label: function(context) {
+                                        const val = context.parsed || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const pct = ((val / total) * 100).toFixed(2);
+                                        return ` ${context.label}: ${val.toLocaleString()} 人次 (${pct}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                twPieChart.config.type = twChartType;
+                twPieChart.data.datasets[0].data = chartData;
+                twPieChart.update();
+            }
+
+            // Update Monthly Table
+            const tbody = document.getElementById('twRegionTableBody');
+            let rowsHtml = twMonthlyData.map(r => {
+                const isHighlighted = twPeriod !== 'all' && r.year === twPeriod;
+                const rowClass = isHighlighted ? 'bg-blue-500/10 text-blue-200' : 'hover:bg-slate-800/50 transition-colors';
+                return `
+                    <tr class="${rowClass}">
+                        <td class="px-4 py-3 text-center">${r.year}</td>
+                        <td class="px-4 py-3 text-center">${r.month}</td>
+                        <td class="px-4 py-3">${r.asia.toLocaleString()}</td>
+                        <td class="px-4 py-3">${r.africa.toLocaleString()}</td>
+                        <td class="px-4 py-3">${r.americas.toLocaleString()}</td>
+                        <td class="px-4 py-3">${r.oceania.toLocaleString()}</td>
+                        <td class="px-4 py-3">${r.europe.toLocaleString()}</td>
+                        <td class="px-4 py-3">${r.unknown.toLocaleString()}</td>
+                        <td class="px-4 py-3 font-bold text-slate-100">${r.total.toLocaleString()}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            rowsHtml += `
+                <tr class="bg-slate-900/90 font-bold text-amber-400 border-t-2 border-slate-700">
+                    <td colspan="2" class="px-4 py-3.5 text-center font-sans">${twPeriod === 'all' ? '總計 (Total)' : twPeriod + '年小計'}</td>
+                    <td class="px-4 py-3.5">${sums.asia.toLocaleString()}</td>
+                    <td class="px-4 py-3.5">${sums.africa.toLocaleString()}</td>
+                    <td class="px-4 py-3.5">${sums.americas.toLocaleString()}</td>
+                    <td class="px-4 py-3.5">${sums.oceania.toLocaleString()}</td>
+                    <td class="px-4 py-3.5">${sums.europe.toLocaleString()}</td>
+                    <td class="px-4 py-3.5">${sums.unknown.toLocaleString()}</td>
+                    <td class="px-4 py-3.5">${sums.total.toLocaleString()}</td>
+                </tr>
+            `;
+            tbody.innerHTML = rowsHtml;
+        }
+
+        function filterTwPeriod(period) {
+            twPeriod = period;
+            ['all', '114', '115'].forEach(p => {
+                const btn = document.getElementById(`tw-period-${p}`);
+                if (btn) btn.classList.toggle('btn-active', p === period);
+            });
+            renderTwRegionSection();
+        }
+
+        function switchTwChartType(type) {
+            twChartType = type;
+            document.getElementById('btnTwPie').classList.toggle('btn-active', type === 'pie');
+            document.getElementById('btnTwDoughnut').classList.toggle('btn-active', type === 'doughnut');
+            renderTwRegionSection();
+        }
+
+        function downloadTwPieChart() {
+            if (!twPieChart) return;
+            const link = document.createElement('a');
+            link.download = `台灣來臺旅客五大洲圓餅圖_${twPeriod}.png`;
+            link.href = twPieChart.toBase64Image();
+            link.click();
+        }
+
+        function exportTwRegionCSV() {
+            let csv = "\uFEFF年別,月份,亞洲地區,非洲地區,美洲地區,大洋洲地區,歐洲地區,其他未列明,小計\n";
+            twMonthlyData.forEach(r => {
+                csv += `${r.year},${r.month},${r.asia},${r.africa},${r.americas},${r.oceania},${r.europe},${r.unknown},${r.total}\n`;
+            });
+            csv += "總計,,5280306,14165,959459,156637,489079,788,6900434\n";
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "來台旅客按國籍統計_11410-11509.csv";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Hook into window load without overriding original initChart()
+        window.addEventListener('load', function() {
+            renderTwRegionSection();
+        });
+    </script>
+</body>
+
+</html>
